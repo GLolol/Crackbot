@@ -775,9 +775,6 @@ local function giveMon(usr,chan,msg,args)
 		local i = gameUsers[usr.host].inventory[item]
 		if i.name == "antiPad" then return "You can't give that!" end
 		if gameUsers[usr.host].inventory["blackhole"] then return "The force of your blackhole prevents you from giving!." end
-		if toHost == "Powder/Developer/jacob1" and i.cost < 2000000 then
-			return "Please do not give crap to jacob1"
-		end
 		remInv(usr,item,amt)
 		addInv({host=toHost},{name=i.name,cost=i.cost,info=i.info,amount=1,instock=i.instock},amt)
 		return "Gave "..amt.." "..item
