@@ -436,10 +436,6 @@ local itemUses = {
 	["moo"]=function(usr, args)
 		local other = getUserFromNick(args[2])
 		if other and other.nick ~= usr.nick then
-			if (other.nick == "jacob1" or other.nick == "cracker64") and math.random() < .5 then
-				addInv(usr,storeInventory["moo"],1)
-				return "You moo at "..other.nick..". "..other.nick.." moos back (+1 moo)"
-			end
 			remInv(usr, "moo", 1)
 			addInv(other,storeInventory["moo"],1)
 			return "You moo at "..args[2].." (-1 moo)"
@@ -1137,11 +1133,7 @@ local function quiz(usr,chan,msg,args)
 			return "Quiz in query has 10k max bid"
 		end
 	end
-	if usr.host=="unaffiliated/mniip/bot/xsbot" or usr.host=="178.219.36.155" or usr.host=="april-fools/2014/third/mniip" then
-		if bet > 13333337 then
-			return "You cannot bet this high!"
-		end
-	elseif bet > 10000000000 then
+	if bet > 10000000000 then
 		return "You cannot bet more than 10 billion"
 	end
 	
