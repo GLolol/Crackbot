@@ -13,3 +13,4 @@ lua/*
 mime/*
 socket/*
 plugins/*
+plugins/sandbox/luasandbox
