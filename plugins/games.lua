@@ -319,9 +319,6 @@ local itemUses = {
 					return "The app imploded into a blackhole while browsing, THANKS OBAMA! (-1 iPad, +1 blackhole)"
 				end
 				addInv(usr, storeInventory[name], 1)
-				--if usr.nick == "cracker64" then
-				--	addInv(usr, storeInventory["iPad"], math.random(1,3))
-				--end
 				gameUsers[usr.host].inventory["iPad"].status = os.time()+math.floor((.6-cost/storeInventory[name].cost)*math.log(storeInventory[name].cost)^2)
 				return "You bought a "..name.." on Ebay for "..cost..changeCash(usr,-cost)
 			else
@@ -344,9 +341,6 @@ local itemUses = {
 	end,
 	["penguin"]=function(usr)
 		local rnd = math.random(1,10)
-		if usr.nick:find("iam") then
-			return "Error: You can't use yourself"..changeCash(usr,1)
-		end
 		remInv(usr,"penguin",1)
 		if rnd < 3 then
 			return "Your pet penguin caught a plane back to Antarctica (-1 penguin)"
@@ -372,16 +366,9 @@ local itemUses = {
 	end,
 	["doll"]=function(usr)
 		remInv(usr,"doll",1)
-		if string.lower(usr.nick):find("mitch") then
-			ircSendRawQ("KICK "..config.primarychannel.." "..usr.nick)
-			return "You stick a needle in the doll. Your leg starts bleeding and you die (-1 doll)"
-		end
 		local rnd = math.random(1,100)
 		if rnd <= 50 then
-			return "You find out the doll was gay and throw it away (-1 doll)"
-		elseif rnd == 51 then
-			ircSendRawQ("KICK "..config.primarychannel.." wolfmitchell")
-			return "You stick a needle in the doll. wolfmitchell dies (-1 doll)"
+			return "You find out the doll was evil and throw it away (-1 doll)"
 		else
 			return "The doll looks so ugly that you burn it (-1 doll)"
 		end
@@ -477,9 +464,6 @@ local itemUses = {
 		end
 	end,
 	["potato"]=function(usr,args,chan)
-		if usr.nick == "jacob1" then
-			return "You are a potato"..changeCash(usr,1000)
-		end
 		local rnd = math.random(0,99)
 		if rnd < 20 then
 			return "I'm a potato"
@@ -628,13 +612,7 @@ local itemUses = {
         end
     end,
 }
---powder, chips, shoe, iPad, lamp, penguin, nothing, doll, derp, water, vroom, moo, 
---potato
---gold, diamond, cow, house, cube, cracker, estate, moo2, billion, company, country, 
---world, god
---- computer ($99) Who would use this piece of junk from your grandmother
---- iMac ($2999) Glorious master race
---- MacPro ($999999) A bit expensive but does have an apple logo!
+
 local function useItem(usr,chan,msg,args)
 	if not args[1] then
 		return "Need to specify an item! '/use <item>'"
@@ -694,9 +672,6 @@ local function odoor(usr,door)
 	if gameUsers[usr.host].cash <= 0 then
 		return "You are broke, you can't afford to open doors"
 	end
-	--[[if usr.nick == "JZTech101" then
-		return "You forgot how to open doors"
-	end]]
 	
 	door = door[1] or "" --do something with more args later?
 	local isNumber=false
@@ -710,12 +685,6 @@ local function odoor(usr,door)
 		if tonumber(door)>15 and (tonumber(door)<=adjust+1 and tonumber(door)>=adjust-1) then randMon=randMon+(adjust*50)^1.15 divideFactor=6 end
 		isNumber=true
 	end
-	--blacklist of people
-	--if (string.lower(usr.nick)):find("mitchell_") then divideFactor=1 end
-	--if (string.lower(usr.nick)):find("boxnode") then divideFactor=1 end
-	--if (string.lower(usr.host)):find("unaffiliated/angryspam98") then divideFactor=1 end
-
-	--some other weird functions to change money
 	
 	--randomly find items
 	local fitem = math.random(9)
@@ -787,9 +756,6 @@ local function giveMon(usr,chan,msg,args)
 	toHost = toHost.host
 	
 	if amt and not item then
-		--if toHost == "Powder/Developer/jacob1" and amt < 50 then
-		--	return "Donations to jacob1 must be at least 1 million"
-		--end
 		if amt>0 and amt==amt then
 			return give(usr.host,toHost,amt)
 		else
@@ -1141,11 +1107,6 @@ local function quiz(usr,chan,msg,args)
 	local alreadyAnswered={}
 	--insert answer function into a chat listen hook
 	addListener(qName,function(nusr,nchan,nmsg)
-		--blacklist of people
-		--if nusr.host=="gprs-inet-65-277.elisa.ee" then return end
-		--if nusr.host=="unaffiliated/mniip/bot/xsbot" then return end
-		--if nusr.host=="178.219.36.155" then return end
-		--if nusr.host=="unaffiliated/mniip" then return end
 		if nchan==chan then
 			if nmsg==answer and not alreadyAnswered[nusr.host] then
 				local answeredIn= os.time()-activeQuizTime[qName]-1
