@@ -482,9 +482,6 @@ local itemUses = {
 	end,
 	["penguin"]=function(usr)
 		local rnd = math.random(1,10)
-		if usr.nick:find("iam") then
-			return "Error: You can't use yourself"..changeCash(usr,1)
-		end
 		remInv(usr,"penguin",1)
 		if rnd < 3 then
 			return "Your pet penguin caught a plane back to Antarctica (-1 penguin)"
@@ -510,21 +507,9 @@ local itemUses = {
 	end,
 	["doll"]=function(usr,args,chan)
 		remInv(usr,"doll",1)
-		if chan == "#powder-bots" then
-			if string.lower(usr.nick):find("mitch") then
-				ircSendRawQ("KICK "..config.primarychannel.." "..usr.nick)
-				return "You stick a needle in the doll. Your leg starts bleeding and you die (-1 doll)"
-			end
-			local rnd = math.random(1,100)
-			if rnd <= 50 then
-				return "You find out the doll was gay and throw it away (-1 doll)"
-			elseif rnd == 51 then
-				-- TODO: wolfmitchel parted the channel ):
-				ircSendRawQ("KICK "..chan.." wolfmitchell")
-				return "You stick a needle in the doll. wolfmitchell dies (-1 doll)"
-			else
-				return "The doll looks so ugly that you burn it (-1 doll)"
-			end
+		local rnd = math.random(1,100)
+		if rnd <= 50 then
+			return "You find out the doll was evil and throw it away (-1 doll)"
 		else
 			local rnd = math.random(1,100)
 			if rnd <= 33 then
@@ -650,9 +635,6 @@ local itemUses = {
 		end
 	end,
 	["potato"]=function(usr,args,chan)
-		if usr.nick == "jacob1" then
-			return "You are a potato"..changeCash(usr,1000)
-		end
 		local rnd = math.random(0,99)
 		if rnd < 20 then
 			return "I'm a potato."
@@ -1046,8 +1028,6 @@ local function odoor(usr,door)
 		if tonumber(door)>15 and (tonumber(door)<=adjust+1 and tonumber(door)>=adjust-1) then randMon=randMon+(adjust*50)^1.15 divideFactor=6 end
 		isNumber=true
 	end
-
-	--some other weird functions to change money
 	
 	--randomly find items
 	local fitem = math.random(9)
