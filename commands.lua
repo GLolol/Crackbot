@@ -45,18 +45,15 @@ end
 
 --Load all plugins in plugins/ here
 local listcmd = WINDOWS and "dir /b" or "ls"
-local pluginList = io.popen(listcmd.." \"plugins\"")
-for file in pluginList:lines() do
-	if file:sub(#file-3,#file) == ".lua" then
-		local s,e = pcall(dofile, "plugins/"..file)
-		if not s then
-			if config.logchannel then
-				ircSendChatQ(config.logchannel, e)
-			end
-			print("Error loading plugins/"..file..": "..e)
-		else
-			print("Loaded plugins/"..file)
-		end
+for k, file in pairs(config.plugins) do
+    local s,e = pcall(dofile, "plugins/"..file)
+    if not s then
+        if config.logchannel then
+            ircSendChatQ(config.logchannel, e)
+        end
+        print("Error loading plugins/"..file..": "..e)
+    else
+        print("Loaded plugins/"..file)
 	end
 end
 
