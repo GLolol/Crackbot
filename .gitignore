@@ -4,6 +4,7 @@
 *.dll
 *.sh
 *.zip
+*.bak
 code2.c
 config.lua
 ltn12.lua
@@ -12,5 +13,4 @@ socket.lua
 lua/*
 mime/*
 socket/*
-plugins/*
 plugins/sandbox/luasandbox
