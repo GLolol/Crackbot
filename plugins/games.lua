@@ -679,7 +679,7 @@ local itemUses = {
             end
 
             rnd = math.random()
-            if hittable[1] then
+            if rnd >= .72 and hittable[1] then
                 item = hittable[math.random(1, #hittable)]
                 remInv(usr, "cube", 1)
                 remInv(other, item.name, 1)
