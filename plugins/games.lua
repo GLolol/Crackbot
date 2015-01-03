@@ -431,7 +431,7 @@ local itemUses = {
 			return "You find out the vroom was stolen, you have to take out a credit card to pay it off ( +1 credit)"
 		else
 			return "Ye ye vroom vroom +$1500000"..changeCash(usr,1500000)
-		end	
+		end
 	end,
 	["moo"]=function(usr, args)
 		local other = getUserFromNick(args[2])
@@ -661,6 +661,57 @@ local itemUses = {
             return "A clever conman comes by and tricks you into selling your company for the equivalent value in " ..item.. "s. Unfortunately, it turns out all but " ..good.. " of them were fake! (-1 company, +" ..good.. " " ..item..", +" ..bad.. " junk)"
         end
     end,
+    ["cube"] = function(usr,args,other)
+        local other = getUserFromNick(args[2])
+        if other and other.nick ~= usr.nick then
+            items = {}
+            hittable = {}
+            for k,v in pairs(gameUsers[other.host].inventory) do
+                table.insert(items,v)
+                if v.cost > 0 and v.cost < 500000000 and storeInventory[k] then
+                    table.insert(hittable,v)
+                end
+            end
+
+            if not items[1] then -- Inventory is empty
+                remInv(usr, "cube", 1)
+                return "You throw your cube at "..other.nick.."'s inventory, but realize it was actually empty. What a waste! (-1 cube)"
+            end
+
+            rnd = math.random()
+            if hittable[1] then
+                item = hittable[math.random(1, #hittable)]
+                remInv(usr, "cube", 1)
+                remInv(other, item.name, 1)
+                return "You throw your razor sharp ice cube at "..other.nick.."'s inventory, completely destroying their poor "..item.name..". It's okay, they deserved it anyways! (-1 cube)"
+            else
+                remInv(usr, "cube", 1)
+                return "You throw your cube at "..other.nick.."'s inventory, but you miss and it breaks. (-1 cube)"
+            end
+        end
+        local rnd = math.random(26)
+        if rnd <= 5 then
+            return "You play with your Rubik's cube..."
+        elseif rnd <= 10 then
+            remInv(usr, "cube", 1)
+            amt = math.random(40,90)
+            addInv(usr, storeInventory["water"], amt)
+            return "You play with your cube, but it unfortunately melts. (-1 cube, +"..amt.." water)"
+        elseif rnd <= 15 then
+            remInv(usr, "cube", 1)
+            return "The cube shatters and cuts your eye in the process. The medical costs were $20000. (-1 cube)" .. changeCash(usr, -20000)
+        elseif rnd <= 20 then
+            amt = math.random(5,50)*10
+            return "You solve the 4D Rubik's cube after months of deliberation and are awarded with a $"..amt.." prize." .. changeCash(usr, amt)
+        elseif rnd <= 24 then
+            remInv(usr, "cube", 1)
+            return "You find out that the cube is evil and was actually plotting to start another ice age. Disgusted, you throw it away. (-1 cube)"
+        else
+            remInv(usr, "cube", 1)
+            addInv(usr, storeInventory["billion"], 1)
+            return "Your cube shatters into a billion pieces. (-1 cube, +1 billion)"
+        end
+    end,
 }
 
 local function useItem(usr,chan,msg,args)
@@ -722,7 +773,7 @@ local function odoor(usr,door)
 	if gameUsers[usr.host].cash <= 0 then
 		return "You are broke, you can't afford to open doors"
 	end
-	
+
 	door = door[1] or "" --do something with more args later?
 	local isNumber=false
 	local randMon = 50
@@ -735,7 +786,7 @@ local function odoor(usr,door)
 		if tonumber(door)>15 and (tonumber(door)<=adjust+1 and tonumber(door)>=adjust-1) then randMon=randMon+(adjust*50)^1.15 divideFactor=6 end
 		isNumber=true
 	end
-	
+
 	--randomly find items
 	local fitem = math.random(9)
 	if fitem==1 then fitem=true else fitem=false end
@@ -745,7 +796,7 @@ local function odoor(usr,door)
 	local rstring=""
 	--reset last door time
 	gameUsers[usr.host].lastDoor = os.time()
-	
+
 	if fitem and randomness>0 then
 		--find an item of approximate value
 		local item = findClosestItem(randomness)
@@ -804,7 +855,7 @@ local function giveMon(usr,chan,msg,args)
 		return "Invalid user, or not online"
 	end
 	toHost = toHost.host
-	
+
 	if amt and not item then
 		if amt>0 and amt==amt then
 			return give(usr.host,toHost,amt)
@@ -823,8 +874,8 @@ local function giveMon(usr,chan,msg,args)
 	else
 		return "You don't have that!"
 	end
-	
-	
+
+
 end
 add_cmd(giveMon,"give",0,"Give money or item to a user, '/give <username> <amount/item>', need over 10k to give.",true)
 --reload cashtext
@@ -1073,7 +1124,7 @@ q= function() --Count the color of words, or what the word says.
 		end
 		answer = wordColorList[math.random(#wordColorList)]
 		table.insert(nt,"\003"..allColors[guessC]..answer)
-		
+
 		for k,v in pairs(t) do table.insert(nt,v..wordColorList[math.random(#wordColorList)]) end
 		intro = "What does the "..guessC.." word say" guessC=""
 	else --what colour is the word
@@ -1083,7 +1134,7 @@ q= function() --Count the color of words, or what the word says.
 		end
 		answer = wordColorList[math.random(#wordColorList)]
 		table.insert(nt,"\003"..allColors[answer]..guessC)
-		
+
 		for k,v in pairs(t) do table.insert(nt,"\003"..allColors[wordColorList[math.random(#wordColorList)]]..v) end
 		intro = "What color is the word "
 	end
@@ -1093,7 +1144,7 @@ q= function() --Count the color of words, or what the word says.
 		nt[n], nt[k] = nt[k], nt[n]
 		n = n - 1
 	end
-	
+
 	return intro..guessC.." : "..table.concat(nt," "),tostring(answer),timeout,multiplier
 end,
 isPossible= function(s) --this question only accepts number and color answers
@@ -1121,12 +1172,12 @@ local function quiz(usr,chan,msg,args)
 	if not msg or not tonumber(args[1]) then
 		return "Start a question for the channel, '/quiz <bet>'"
 	end
-	
+
 	local qName = chan.."quiz"
 	if activeQuiz[qName] then return
 		"There is already an active quiz here!"
 	end
-	
+
 	local bet= math.floor(tonumber(args[1]))
 	if chan:sub(1,1)~='#' then
 		if bet>10000 then
@@ -1136,7 +1187,7 @@ local function quiz(usr,chan,msg,args)
 	if bet > 10000000000 then
 		return "You cannot bet more than 10 billion"
 	end
-	
+
 	local gusr = gameUsers[usr.host]
 	if bet~=bet or bet<1000 then
 		return "Must bet at least 1000!"
