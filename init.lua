@@ -23,7 +23,7 @@ console:settimeout(5)
 
 if not WINDOWS and config.terminalinput then
 	--start my console line-in
-	os.execute(config.terminal.." -x lua consolein.lua")
+	os.execute(config.terminal.." lua consolein.lua")
 end
 shutdown = false
 user = config.user
@@ -66,7 +66,6 @@ end
 if config.logchannel then
 	irc:join(config.logchannel)
 end
-irc:sendChat(config.primarychannel, "moo"*#config.autojoin)
 
 local function consoleThink()
 	if not connected then return end
