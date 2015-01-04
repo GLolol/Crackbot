@@ -13,4 +13,4 @@ $ make
 ```
 
 ### License
-Bug [@jacob1](https://github.com/jacob1) to add one!
+MIT License (see [LICENSE](LICENSE) file).
