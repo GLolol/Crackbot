@@ -8,7 +8,7 @@ function ctrl_c() {
 # Catch SIGINT and exit
 trap ctrl_c SIGINT
 
-if [ -e /usr/bin/lua ]
+if [ -x `which lua` ]
 	then
 		while :
 			do
@@ -16,5 +16,5 @@ if [ -e /usr/bin/lua ]
 			lua init.lua
 			done
 	else
-		echo "Lua was not found at /usr/bin/lua! If lua is installed in this computer, then you may safely proceed by running lua init.lua inside the directory wherein Crackbot resides."
+		echo "Lua was not found! If lua is installed in this computer, then you may safely proceed by running lua init.lua inside the directory wherein Crackbot resides."
 fi
