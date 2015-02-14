@@ -531,26 +531,26 @@ local itemUses = {
 		end
 		local rnd = math.random(0,99)
 		if rnd < 20 then
-			return "I'm a potato"
+			return "I'm a potato."
 		elseif rnd < 30 then
 			addInv(usr,storeInventory["potato"],1)
-			return "You are turned into a potato (+1 potato)"
+			return "You are turned into a potato (+1 potato)."
 		elseif rnd < 50 then
-			return "You stare at the potato. You determine it is a potato"
+			return "You stare at the potato. You determine it is a potato."
 		elseif rnd < 60 then
 			remInv(usr,"potato",1)
-			return "You find out potatoes that can't talk are very expensive and sell yours for $75000000"..changeCash(usr, 60000000)
+			return "You find out potatoes that can't talk are very expensive and sell yours for $75000000."..changeCash(usr, 60000000)
 		else
 			remInv(usr,"potato",1)
 			local str
 			if rnd < 70 then
-				str = "You plant the potato in the ground"
+				str = "You plant the potato in the ground (-1 potato)."
 			elseif rnd < 80 then
-				str = "You run over the potato with a steamroller to make mashed potatoes"
+				str = "You run over the potato with a steamroller to make mashed potatoes. (-1 potato)"
 			elseif rnd < 90 then
-				str = "You peel the potato"
+				str = "You peel the potato. (-1 potato)."
 			elseif rnd < 100 then
-				str = "You fry the potato and make french fries"
+				str = "You fry the potato and make french fries. (-1 potato)."
 			end
 			if rnd%2 == 1 and irc.channels[chan] then
 				str = str..". The potato attacks you (-1 potato)"..changeCash(usr,-10000000)
