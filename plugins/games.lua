@@ -1,4 +1,5 @@
 module("games", package.seeall)
+require "math"
 
 local function loadUsers()
 	local t= table.load("plugins/gameUsers.txt") or {}
@@ -212,7 +213,12 @@ local function changeCash(usr,amt)
 			return " You went bankrupt, money reset"
 		end
 	end
-	return " ($\002"..nicenum(gameUsers[usr.host].cash).." \002now)"
+	if amt >= 0 then
+		change = "+$" .. amt
+	else
+		change = "-$" .. math.abs(amt)
+	end
+	return " (".. change ..", $\002"..nicenum(gameUsers[usr.host].cash).." \002now)"
 end
 
 --add item to inventory, creating if not exists
