@@ -509,9 +509,7 @@ local itemUses = {
 				str = "You fry the potato and make french fries. (-1 potato)."
 			end
 			if rnd%2 == 1 and irc.channels[chan] then
-				str = str..". The potato attacks you"..changeCash(usr,-10000000)
-				ircSendRawQ("KICK "..chan.." "..usr.nick.." :"..str)
-				str = ""
+				str = str.." The potato attacks you ($-10000000) "..changeCash(usr,-10000000)
 			end
 			remInv(usr,"potato",1)
 			return str
