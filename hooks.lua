@@ -177,7 +177,9 @@ function timerCheck()
 					table.remove(waitingCommands,k)
 				end
 			else
+				--coroutine succeeded but caught an error
 				table.remove(waitingCommands,k)
+				ircSendChatQ(v.channel,resp)
 			end
 		end
 	end
@@ -368,7 +370,6 @@ local function realchat(usr,channel,msg)
 		--Last said
 		if channel and channel:sub(1,1)=='#' then (irc.channels[channel].users[usr.nick] or {}).lastSaid = {["msg"]=msg, ["time"]=os.time()} end
 	end
-
 end
 local function chat(usr,channel,msg)
 	if channel==user.nick then channel=usr.nick end --if query, respond back to usr
