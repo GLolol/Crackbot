@@ -214,9 +214,9 @@ local function changeCash(usr,amt)
 		end
 	end
 	if amt >= 0 then
-		change = "+$" .. amt
+		change = "+$" .. nicenum(amt)
 	else
-		change = "-$" .. math.abs(amt)
+		change = "-$" .. nicenum(math.abs(amt))
 	end
 	return " (".. change ..", $\002"..nicenum(gameUsers[usr.host].cash).." \002now)"
 end
