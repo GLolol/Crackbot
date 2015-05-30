@@ -28,34 +28,35 @@ local config = {
 	},
 	--User info, set these to whatever you need
 	user = {
-		nick = "Crackbot",
-		username = "Meow",
-		realname = "moo",
+		nick = "crekbut",
+		username = "crekbut",
+		realname = "because",
 		
 		--account = "Crackbot",
 		--password = "password"
 	},
 	--Owner info, only used now for terminal input
 	owner = {
-		nick = "jacob1",
-		host = "Powder/Developer/jacob1",
-		fullhost = "jacob1!~jacob1@Powder/Developer/jacob1"
+		nick = "GLolol",
+		host = "localhost",
+		fullhost = "GLolol!GLolol@localhost",
 	},
 	--Channels to join on start
 	autojoin = {
-		--"##foo",
+		"##powder-bots",
+		"##GLolol",
 	},
 	--used occasionally to kick people in games.lua
-	primarychannel = "##powder-bots",
+	primarychannel = "##GLolol",
 	--logs all commands done in pm, and added aliases
-	logchannel = "##foo",
+	logchannel = "##Glolol-t",
 	
-	prefix = "%./",
-	suffix = "moo+",
+	prefix = "%=",
+	suffix = "",
 	
 	--turns on terminal input, can be used on linux to input commands directly from a second terminal
 	terminal = "gnome-terminal -x",
-	terminalinput = true
+	terminalinput = false,
 
     -- List of plugins to load
     plugins = {
