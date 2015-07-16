@@ -26,6 +26,7 @@ storeInventory={
 ["nothing"]={name="nothing",cost=10000,info="Nothing, how can you even have this.",amount=1,instock=false},
 ["doll"]=	{name="doll",	cost=15000,info="A voodoo doll of mitch, do whatever you want to it.",amount=1,instock=true},
 ["derp"]=	{name="derp",	cost=50000,info="One derp, to derp things.",amount=1,instock=true},
+["table"]=	{name="table",	cost=70000,info="The fanciest table around!",amount=1,instock=true},
 ["water"]=	{name="water",	cost=100000,info="Holy Water, you should feel very blessed now.",amount=1,instock=false},
 ["vroom"]=	{name="vroom",	cost=500000,info="Vroom vroom.",amount=1,instock=true},
 ["moo"]=	{name="moo",	cost=1000000,info="A very rare moo, hard to find.",amount=1,instock=false},
@@ -364,9 +365,6 @@ local itemUses = {
 	end,
 	["penguin"]=function(usr)
 		local rnd = math.random(1,10)
-		if usr.nick:find("iam") then
-			return "Error: You can't use yourself"..changeCash(usr,1)
-		end
 		remInv(usr,"penguin",1)
 		if rnd < 3 then
 			return "Your pet penguin caught a plane back to Antarctica (-1 penguin)"
@@ -392,21 +390,9 @@ local itemUses = {
 	end,
 	["doll"]=function(usr,args,chan)
 		remInv(usr,"doll",1)
-		if chan == "##powder-bots" then
-			if string.lower(usr.nick):find("mitch") then
-				ircSendRawQ("KICK "..config.primarychannel.." "..usr.nick)
-				return "You stick a needle in the doll. Your leg starts bleeding and you die (-1 doll)"
-			end
-			local rnd = math.random(1,100)
-			if rnd <= 50 then
-				return "You find out the doll was gay and throw it away (-1 doll)"
-			elseif rnd == 51 then
-				-- TODO: wolfmitchel parted the channel ):
-				ircSendRawQ("KICK "..chan.." wolfmitchell")
-				return "You stick a needle in the doll. wolfmitchell dies (-1 doll)"
-			else
-				return "The doll looks so ugly that you burn it (-1 doll)"
-			end
+		local rnd = math.random(1,100)
+		if rnd <= 50 then
+			return "You find out the doll was evil and throw it away (-1 doll)"
 		else
 			local rnd = math.random(1,100)
 			if rnd <= 33 then
@@ -532,9 +518,6 @@ local itemUses = {
 		end
 	end,
 	["potato"]=function(usr,args,chan)
-		if usr.nick == "jacob1" then
-			return "You are a potato"..changeCash(usr,1000)
-		end
 		local rnd = math.random(0,99)
 		if rnd < 20 then
 			return "I'm a potato."
@@ -748,6 +731,31 @@ local itemUses = {
 	['antiPad'] = function(usr,args)
 		return "You play Angry Birds."
 	end,
+    ["table"] = function(usr)
+        local rnd = math.random(21)
+        print(rnd)
+        if rnd <= 3 then
+            inv = {}
+            for k,v in pairs(gameUsers[usr.host].inventory) do table.insert(inv,v) end
+            randomitem = inv[math.random(1, #inv)]
+            print(randomitem.name)
+            remInv(usr, randomitem.name, 1)
+            return "You flip a table (╯°□°）╯︵ ┻━┻. It lands on your " ..randomitem.name.. " and breaks it. (-1 "..randomitem.name..")"
+        elseif rnd <= 5 then
+            return "You stare at your table. The table stares back o.o"
+        elseif rnd <= 10 then
+            return "You look underneath your table and find a wad of cash!"..changeCash(usr,math.random(1,5000))
+        elseif rnd <= 15 then
+            remInv(usr, "table", 1)
+            return "You flip your table (╯°□°）╯︵ ┻━┻. It falls and breaks. (-1 table)"
+        elseif rnd <= 19 then
+            addInv(usr, storeInventory["shoe"], 2)
+            return "You flip your table (╯°□°）╯︵ ┻━┻ and find a pair of shoes. (+2 shoes)"
+        else
+            addInv(usr, storeInventory["gold"], 1)
+            return "Eureka! You find gold under your table! (+1 gold)"
+        end
+    end,
 }
 
 local function useItem(usr,chan,msg,args)
@@ -822,8 +830,6 @@ local function odoor(usr,door)
 		if tonumber(door)>15 and (tonumber(door)<=adjust+1 and tonumber(door)>=adjust-1) then randMon=randMon+(adjust*50)^1.15 divideFactor=6 end
 		isNumber=true
 	end
-
-	--some other weird functions to change money
 	
 	--randomly find items
 	local fitem = math.random(9)
@@ -906,9 +912,6 @@ local function giveMon(usr,chan,msg,args)
 		local i = gameUsers[usr.host].inventory[item]
 		if i.name == "antiPad" then return "You can't give that!" end
 		if gameUsers[usr.host].inventory["blackhole"] then return "The force of your blackhole prevents you from giving!." end
-		if toHost == "Powder/Developer/jacob1" and i.cost < 2000000 then
-			return "Please do not give crap to jacob1"
-		end
 		remInv(usr,item,amt)
 		addInv({host=toHost},{name=i.name,cost=i.cost,info=i.info,amount=1,instock=i.instock},amt)
 		return "Gave "..amt.." "..item

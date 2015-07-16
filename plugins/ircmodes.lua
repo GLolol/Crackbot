@@ -46,7 +46,9 @@ local function op(usr,chan,msg,args)
 			chan=args[1]
 		end
 	end
-	setMode(chan,"+o", args[2] or msg)
+
+    local nick = args[2] or msg
+	setMode(chan,"+o", nick)
 end
 add_cmd(op,"op",30,"Op a user, '/op [<chan>] <username>'",true)
 --DEOP
@@ -74,7 +76,7 @@ local function voice(usr,chan,msg,args)
 			if not args[2] then args[2]=usr.nick end
 			chan=args[1]
 		end
-	end
+	end local nick = args[2] or msg
 	setMode(chan,"+v", nick)
 end
 add_cmd(voice,"voice",15,"Voice a user, '/voice [<chan>] <username>'",true)
