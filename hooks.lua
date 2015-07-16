@@ -94,17 +94,18 @@ function ircSendOne()
 	end
 end
 
-
-function setPrefix(fix)
-	if fix and type(fix)=="string" and fix~="" then
-		prefix=fix
+local prefix
+function setPrefix(newprefix)
+	if newprefix and type(newprefix)=="string" and newprefix~="" then
+		prefix=newprefix
 	end
 end
 setPrefix(config.prefix)
 
-function setSuffix(fix)
-	if fix and type(fix)=="string" and fix~="" then
-		suffix=fix
+local suffix
+function setSuffix(newsuffix)
+	if newsuffix and type(newsuffix)=="string" and newsuffix~="" then
+		suffix=newsuffix
 	end
 end
 setSuffix(config.suffix)
