@@ -8,13 +8,16 @@ function ctrl_c() {
 # Catch SIGINT and exit
 trap ctrl_c SIGINT
 
-if [ -e /usr/bin/lua ]
-	then
+git submodule init
+git submodule update
+
+if [[ -x "$(which lua)" ]]; then
 		while :
-			do
+		do
 			echo "(Re)starting Crackbot - Press Ctrl-C to break."
 			lua init.lua
-			done
-	else
-		echo "Lua was not found at /usr/bin/lua! If lua is installed in this computer, then you may safely proceed by running lua init.lua inside the directory wherein Crackbot resides."
+			sleep 2
+		done
+else
+	echo "Lua was not found! If lua is installed in this computer, then you may safely proceed by running lua init.lua inside the directory wherein Crackbot resides."
 fi
