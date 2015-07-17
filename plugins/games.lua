@@ -46,14 +46,11 @@ storeInventory={
 ["world"]=	{name="world",	cost=1000000000000000,info="You managed to buy the entire world",amount=1,instock=true},
 ["god"]=	{name="god",	cost=999999999999999999999,info="Even God sold himself to obey your will.",amount=1,instock=true},
 }
-local inStockSorted = {}
+local storeInventorySorted = {}
 for k,v in pairs(storeInventory) do
-	if v.instock then
-		table.insert(inStockSorted,v)
-	end
+	table.insert(storeInventorySorted,v)
 end
-table.sort(inStockSorted,function(a,b) if a.cost<b.cost then return a end end)
---for k,v in pairs(inStockSorted) do print(v.name) end
+table.sort(storeInventorySorted,function(a,b) if a.cost<b.cost then return a end end)
 
 --make function hook to reload user cash
 local function loadUsersCMD()
@@ -326,8 +323,8 @@ local itemUses = {
 			return "Please wait "..(info-os.time()).." seconds for the eBay app update to finish downloading"
 		end
 		local name
-		for k,v in pairs(inStockSorted) do
-			if math.random(1,7) < 2 and v.cost>0 then
+		for k,v in pairs(storeInventorySorted) do
+			if v.instock and math.random(1,7) < 2 and v.cost>0 then
 				name = v.name
 				break
 			end
@@ -636,6 +633,50 @@ local itemUses = {
 			return "Your cube shatters into a billion pieces. (-1 cube, +1 billion)"
 		end
 	end,
+	["estate"] = function(usr,args)
+		local rnd = math.random(38)
+		if rnd <= 5 then
+			return "The sun shines on your grand estate. A new day has begun..."
+		elseif rnd <= 10 then
+			return "You gaze upon the lawns of your estate that seem to go on forever..."
+		elseif rnd <= 16 then
+			local amt = math.random(1,5)
+			addInv(usr, storeInventory["house"], 1)
+			local text = (amt == 1 and "a house" or "some houses")
+			return "You build "..text.." on your estate. (+"..amt.." house"..(amt == 1 and "" or "s")..")"
+		elseif rnd <= 22 then
+			local houseCount = gameUsers[usr.host].inventory["house"].amount
+			local bad = {"catches on fire", "spontaneously combusts", "gets eaten by termites", "magically disappears"}
+			local randombad = bad[math.random(1, #bad)]
+			if houseCount > 1 then
+				remInv(usr, "house", 1)
+				return "One of the houses on your estate " ..randombad..". (-1 house)"
+			else
+				local cost = storeInventory["house"].cost
+				return "One of the houses on your estate " ..randombad..", and you are forced to pay the damages. (-$"..cost..")"..changeCash(usr, -cost)
+			end
+		elseif rnd <= 28 then
+			local amt = (math.random(1,15) * 1000000)
+			return "You collect rent from your tenants. (+$"..amt..")"..changeCash(usr, amt)
+		elseif rnd <= 32 then
+			local bad = {"angry aliens", "government spies", "hungry black holes", "angry tenants", "evil monsters"}
+			local randombad = bad[math.random(1, #bad)]
+			remInv(usr, "estate", 1)
+			return "A group of "..randombad.." shows up on your estate and seizes it with force! (-1 estate)"
+		else
+			local potatoes = math.random(10, 60)
+			local cows = math.random(2, 18)
+			local cost = ((storeInventory["cow"].cost * cows) + (storeInventory["potato"].cost * potatoes))
+			local subtractedcost = (cost * math.random(75, 125) / 100)
+			if subtractedcost < gameUsers[usr.host].cash then
+				addInv(usr, storeInventory["potato"], potatoes)
+				addInv(usr, storeInventory["cow"], cows)
+				return "You start a farm on your estate. However, this costs you some money to set up. (+"..cows.." cows, +"..potatoes.." potatoes, -$"..subtractedcost..")"..changeCash(usr, -subtractedcost)
+			else
+				return "You want to start a farm on your estate, but you realize you don't have enough money."
+			end
+		end
+	end,
 	["billion"] = function(usr,args)
 		local other = getUserFromNick(args[2])
 		if other and other.nick ~= usr.nick then
@@ -652,7 +693,7 @@ local itemUses = {
 				local t = {}
 				for k,v in pairs(gameUsers[other.host].inventory) do table.insert(t,v) end
 				local otheritem = t[math.random(#t)]
-				if otheritem.instock or otheritem.cost<0 then
+				if otheritem.instock or otheritem.cost<0 or otheritem.cost>=1e14 then
 					remInv(other, otheritem.name, 1)
 					addInv(usr, otheritem,1)
 					return "You threw your billion at "..other.nick..", they are thankful and give you a " .. otheritem.name .. " in return without thinking."
@@ -950,7 +991,7 @@ local function store(usr,chan,msg,args)
 	end
 	if args[1]=="list" then
 		local t={}
-		for k,v in pairs(storeInventory) do
+		for k,v in pairs(storeInventorySorted) do
 			if v.instock and gameUsers[usr.host].cash>=v.cost then table.insert(t,"\15"..v.name.."\00309("..nicenum(v.cost)..")") end
 		end
 		return table.concat(t," ")
@@ -986,11 +1027,26 @@ local function store(usr,chan,msg,args)
 		return "Item not found"
 	end
 	if args[1]=="inventory" then
-		local t={}
+		local invnames = {}
 		for k,v in pairs(gameUsers[usr.host].inventory) do
-			table.insert(t,v.name.."("..v.amount..")")
+			invnames[v.name] = true
 		end
-		return "You have, "..table.concat(t,", ")
+		local t = {}
+		for k,v in pairs(storeInventorySorted) do
+			if invnames[v.name] then
+				table.insert(t, v.name.."("..gameUsers[usr.host].inventory[v.name].amount..")")
+			end
+		end
+		for k,v in pairs(gameUsers[usr.host].inventory) do
+			if not storeInventory[k] then
+				table.insert(t, v.name.."("..v.amount..")")
+			end
+		end
+		if #t > 0 then
+			return "You have: "..table.concat(t,", ")
+		else
+			return "You have no items ):"
+		end
 	end
 	if args[1]=="sell" then
 		if not args[2] then return "Need an item! 'sell <item> [<amt>] [<item2> [<amt2>]]...'" end
