@@ -592,7 +592,7 @@ local itemUses = {
 			return "You use vroom! A cloud of smoke appears (-1 vroom)"
 		elseif rnd<46 then
 			addInv(usr,storeInventory["credit"],1)
-			return "You find out the vroom was stolen, you have to take out a credit card to pay it off ( +1 credit)"
+			return "You find out the vroom was stolen, you have to take out a credit card to pay it off (+1 credit)"
 		else
 			return "Ye ye vroom vroom +$1500000"..changeCash(usr,1500000)
 		end	
