@@ -318,10 +318,6 @@ local itemUses = {
 				return "Your iPad broke (-1 iPad, +1 junk)"
 			end
 		end
-		local info = gameUsers[usr.host].inventory["iPad"].status
-		if info and os.time() < info then
-			return "Please wait "..(info-os.time()).." seconds for the eBay app update to finish downloading"
-		end
 		local name
 		for k,v in pairs(storeInventorySorted) do
 			if v.instock and math.random(1,7) < 2 and v.cost>0 then
@@ -340,7 +336,6 @@ local itemUses = {
 					return "The app imploded into a blackhole while browsing, THANKS OBAMA! (-1 iPad, +1 blackhole)"
 				end
 				addInv(usr, storeInventory[name], 1)
-				gameUsers[usr.host].inventory["iPad"].status = os.time()+math.floor((.6-cost/storeInventory[name].cost)*math.log(storeInventory[name].cost)^2)
 				return "You bought a "..name.." on eBay for $"..cost..changeCash(usr,-cost)
 			else
 				return "You couldn't afford to buy "..name
