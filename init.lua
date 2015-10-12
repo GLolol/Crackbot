@@ -37,11 +37,8 @@ config.network.password = nil
 if config.user.password then
 	irc:sendChat("NickServ", "identify "..config.user.account.." "..config.user.password)
 	config.user.password = nil
-	print("Connected, sleeping for 7 seconds")
-	sleep(7)
-else
-	print("Connected")
 end
+print("Connected")
 
 local connected=false
 if not WINDOWS then
