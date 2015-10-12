@@ -15,11 +15,13 @@ storeInventory={
 ["credit"]=	{name="credit",	cost=-5000000,info="You owe somebody a lot of money",amount=1,instock=false},
 ["void"]=	{name="void",	cost=-50000,info="Watch out, this will take money with it!",amount=1,instock=false},
 ["junk"]=	{name="junk",	cost=-500,info="Why do you have this, you will have to PAY someone to get rid of it",amount=1,instock=false},
+["law"]=	{name="law",	cost=-1,info="A law that must be obeyed!",amount=1,instock=true},
 ["powder"]=	{name="powder",	cost=5,info="It's some kind of powder...",amount=1,instock=true},
 ["yarn"]=	{name="yarn",	cost=8,info="A small ball of yarn.",amount=1,instock=true},
 ["chips"]=	{name="chips",	cost=50,info="Baked Lays.",amount=1,instock=true},
 ["shoe"]=	{name="shoe",	cost=200,info="One shoe, why is there only one?",amount=1,instock=false},
 ["iPad"]=	{name="iPad",	cost=499,info="A new iPad.",amount=1,instock=true},
+["bed"]=	{name="bed",	cost=500,info="A bed. Explodes in the nether.",amount=1,instock=true},
 ["table"]=	{name="table",	cost=700,info="The fanciest table around!",amount=1,instock=true},
 ["lamp"]=	{name="lamp",	cost=1001,info="A very expensive lamp, great lighting.",amount=1,instock=true},
 ["penguin"]={name="penguin",cost=5000,info="Don't forget to feed it.",amount=1,instock=false},
@@ -797,6 +799,13 @@ local itemUses = {
             return "Eureka! You find gold under your table! (+1 gold)"
         end
     end,
+	["law"]=function(usr)
+		remInv(usr,"law",1)
+		return "You break the law. (-1 law)"
+	end,
+	["bed"]=function(usr)
+		return "You sleep. Everything goes \00314bl\00301ac\00301,01k oh SHIT"
+	end
 }
 
 local function useItem(usr,chan,msg,args)
