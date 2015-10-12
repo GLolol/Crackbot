@@ -539,7 +539,7 @@ local itemUses = {
 				str = "You fry the potato and make french fries. (-1 potato)."
 			end
 			if rnd%2 == 1 and irc.channels[chan] then
-				str = str..". The potato attacks you (-1 potato)"..changeCash(usr,-10000000)
+				str = str..". The potato attacks you and runs away with your wallet ($-10000000)."..changeCash(usr,-10000000)
 				if irc.channels[chan].users[config.user.nick].access.op then
 					ircSendRawQ("KICK "..chan.." "..usr.nick.." :"..str)
 					return nil
