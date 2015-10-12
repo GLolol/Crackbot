@@ -15,7 +15,7 @@ if [[ -x "$(which lua)" ]]; then
 		while :
 		do
 			echo "(Re)starting Crackbot - Press Ctrl-C to break."
-			lua init.lua
+			lua init.lua $*
 			sleep 2
 		done
 else
