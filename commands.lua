@@ -412,16 +412,6 @@ local function timer(usr,chan,msg,args)
 end
 add_cmd(timer,"timer",0,"Time until a print is done, '/timer <time(seconds)> <text>'",true)
 
---BUG, report something to me in a file
-local function rbug(usr,chan,msg,args)
-	if not msg then error("No msg") end
-	local f = io.open("bug.txt","a")
-	f:write("["..os.date().."] ".. usr.host..": "..msg.."\r\n")
-	f:close()
-	return "Reported bug"
-end
-add_cmd(rbug,"bug",0,"Report something to "..config.owner.nick..", '/bug <msg>'",true)
-
 --SEEN, display last message by a user
 local function seen(usr,chan,msg,args)
 	if not args[1] then return commands["seen"].helptext end
