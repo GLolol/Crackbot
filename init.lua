@@ -4,12 +4,14 @@ WINDOWS = package.config:sub(1,1) == "\\"
 dofile("derp.lua")
 dofile("irc/init.lua")
 
-local s,r = pcall(dofile,"config.lua")
+filename = arg[1] or "config.lua"
+
+local s,r = pcall(dofile,filename)
 if not s then
 	if r:find("No such file or directory") then
 		print("Config not found, copying template")
 		os.execute("cp configtemplate.lua config.lua")
-		r=dofile("config.lua")
+		r=dofile(filename)
 	else
 		error(r)
 	end

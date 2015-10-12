@@ -7,6 +7,7 @@
 *.bak
 code2.c
 config.lua
+config-*.lua
 ltn12.lua
 mime.lua
 socket.lua
