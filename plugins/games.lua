@@ -8,6 +8,13 @@ local function loadUsers()
 end
 gameUsers = gameUsers or loadUsers()
 
+local function itemName(item)
+	local fixed = item:lower()
+	if fixed == "ipad" then return "iPad"
+	elseif fixed == "antipad" then return "antiPad"
+	else return fixed
+	end
+end
 storeInventory={
 ["paradox"]={name="paradox",cost=-5000000000000,info="Game over for you, buddy",amount=1,instock=false},
 ["blackhole"]=	{name="blackhole",	cost=-50000000000,info="OH MY GOD, GET RID OF IT NOW",amount=1,instock=false},
@@ -398,29 +405,29 @@ local itemUses = {
 	end,
 	["derp"]=function(usr)
 		remInv(usr,"derp",1)
-		local count = 0
+		local itemList, itemWeight, total = {}, {}, 0
 		for k,v in pairs(gameUsers[usr.host].inventory) do
-			if v.cost >= -1000 then
-				count = count + v.amount
+			if v.cost >= -1000 and v.instock then
+				table.insert(itemList,v)
+				total = total + v.amount
+				table.insert(itemWeight,total)
 			end
 		end
-		if count == 0 then
+		if #itemList == 0 then
 			return "You are a derp"
 		end
-		local item,rnd,count = nil,math.random(count),0
-		for k,v in pairs(gameUsers[usr.host].inventory) do
-			if v.cost >= -1000 then
-				count = count + v.amount
-				if count >= rnd then
-					item = v
-					break
-				end
+		local item,rnd = nil,math.random(total)
+		for i,v in ipairs(itemWeight) do
+			if v >= rnd then
+				item = itemList[i]
+				break
 			end
 		end
 		if not item then
 			return "jacob1 is a derp"
 		end
 		rnd = math.random()
+		--return total.." "..rnd.." : "..table.concat(itemWeight," ")
 		if rnd < .5 then
 			addInv(usr,item,1)
 			return "You derp your "..item.name.." and it multiplies! (+1 "..item.name..")"
@@ -798,10 +805,14 @@ local function useItem(usr,chan,msg,args)
 	if not args[1] then
 		return "Need to specify an item! '/use <item>'"
 	end
-	if not gameUsers[usr.host].inventory[args[1]] or gameUsers[usr.host].inventory[args[1]].amount<=0 then
+	if chan:sub(1,1) ~= "#" then
+		return "This command must be run in a channel"
+	end
+	local item = itemName(args[1])
+	if not gameUsers[usr.host].inventory[item] or gameUsers[usr.host].inventory[item].amount<=0 then
 		return "You don't have that item!"
-	elseif itemUses[args[1]] and gameUsers[usr.host].inventory[args[1]] then
-		return itemUses[args[1]](usr,args,chan)
+	elseif itemUses[item] and gameUsers[usr.host].inventory[item] then
+		return itemUses[item](usr,args,chan)
 	else
 		return "This item can't be used!"
 	end
@@ -855,6 +866,7 @@ local function odoor(usr,door)
 	end
 	
 	door = door[1] or "" --do something with more args later?
+	if door == "secret" then return "http://starcatcher.us:54329/Door" end
 	local isNumber=false
 	local randMon = 50
 	local divideFactor = 2
@@ -922,7 +934,7 @@ local function giveMon(usr,chan,msg,args)
 		amt = math.floor(tonumber(args[2]))
 	else
 		amt= math.floor(tonumber(args[3]) or 1)
-		item=args[2]
+		item=itemName(args[2])
 	end
 	if string.lower(args[1]) == string.lower(usr.nick) then
 		return "You can't give to yourself..."
@@ -984,16 +996,17 @@ local function store(usr,chan,msg,args)
 	if not msg  or args[1]=="help" then
 		return "Welcome to the CrackStore, use '/store list' or '/store info <item>' or '/store buy <item> [<amt>]' or '/store sell <item> [<amt>]'."
 	end
-	if args[1]=="list" then
+	local command = args[1]:lower()
+	if command=="list" then
 		local t={}
 		for k,v in pairs(storeInventorySorted) do
 			if v.instock and gameUsers[usr.host].cash>=v.cost then table.insert(t,"\15"..v.name.."\00309("..nicenum(v.cost)..")") end
 		end
 		return table.concat(t," ")
 	end
-	if args[1]=="info" then
+	if command=="info" then
 		if not args[2] then return "Need an item! 'info <item>'" end
-		local item = args[2]
+		local item = itemName(args[2])
 		for k,v in pairs(gameUsers[usr.host].inventory) do
 			if k==item then return "Item: "..k.." Cost: $"..nicenum(v.cost).." Info: "..v.info end
 		end
@@ -1002,9 +1015,9 @@ local function store(usr,chan,msg,args)
 		end
 		return "Item not found"
 	end
-	if args[1]=="buy" then
+	if command=="buy" then
 		if not args[2] then return "Need an item! 'buy <item> [<amt>]'" end
-		local item = args[2]
+		local item = itemName(args[2])
 		local amt = math.floor(tonumber(args[3]) or 1)
 		if amt==amt and amt>0 then
 			for k,v in pairs(storeInventory) do
@@ -1021,7 +1034,7 @@ local function store(usr,chan,msg,args)
 		end
 		return "Item not found"
 	end
-	if args[1]=="inventory" then
+	if command=="inventory" then
 		local invnames = {}
 		for k,v in pairs(gameUsers[usr.host].inventory) do
 			invnames[v.name] = true
@@ -1043,12 +1056,12 @@ local function store(usr,chan,msg,args)
 			return "You have no items ):"
 		end
 	end
-	if args[1]=="sell" then
+	if command=="sell" then
 		if not args[2] then return "Need an item! 'sell <item> [<amt>] [<item2> [<amt2>]]...'" end
 		local sold, rstring, totalSold = false, "Sold ", 0
 		local i=2
 		while args[i] do
-			local item = args[i]
+			local item = itemName(args[i])
 			local amt = math.floor(tonumber(args[i+1]) or 1)
 			if tonumber(args[i+1]) then i=i+1 end
 			if amt==amt and amt>0 then
@@ -1069,6 +1082,21 @@ local function store(usr,chan,msg,args)
 		else
 			return "You don't have that!"
 		end
+	end
+	if command=="sellall" then
+		local sellList, rstring, totalSold = {}, "", 0
+		--Only sellall INSTOCK positive items
+		for k,v in pairs(gameUsers[usr.host].inventory) do
+			if v.instock and v.cost >= 0 then table.insert(sellList,v) end
+		end
+		if #sellList == 0 then return "You don't have any items to 'sellall'" end
+		for i,v in ipairs(sellList) do
+			changeCash(usr,v.cost*v.amount)
+			rstring = rstring..nicenum(v.amount).." "..v.name..", "
+			totalSold = totalSold + (v.cost*v.amount)
+			remInv(usr,v.name,v.amount)
+		end
+		return "Sold "..rstring.."for $"..totalSold
 	end
 end
 add_cmd(store,"store",0,"Browse the store, '/store list/info/buy/sell'",true,{"shop"})
