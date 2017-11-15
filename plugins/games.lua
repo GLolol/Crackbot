@@ -933,13 +933,9 @@ local function useItem(usr,chan,msg,args)
 		return "This command must be run in a channel"
 	end
 	if usr.host then
-		local nearmute = ratelimit[usr.host] and ratelimit[usr.host] > 2*perusermutelimit/3
-		local toadd = math.random(1,100) == 1 and (nearmute and 10 or 50) or 1
+		local toadd = math.random(1,100) == 1 and 35 or 1
 		ratelimit[usr.host] = ratelimit[usr.host] and ratelimit[usr.host] + toadd or toadd
-		if ratelimit[usr.host] == perusermutelimit or ratelimit[usr.host] >= perusermutelimit+100 then
-			ircSendRawQ("MODE "..chan.." +q :*!*@"..usr.host)
-			return "Error: You have been muted due to excessive spam"
-		elseif ratelimit[usr.host] > peruserlimit then
+		if ratelimit[usr.host] > peruserlimit then
 			return "Error: You have been spamming ./use too often, please wait an hour"
 		end
 	end
