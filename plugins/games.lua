@@ -400,6 +400,26 @@ local itemUses = {
 		end
 		return "Yup it is junk all right"
 	end,
+	["life"] = function(usr)
+		local rnd = math.random(0,10)
+		if rnd == 0 then
+			return "You can't use something you don't have!"
+		elseif rnd <= 3 then
+			return "You contemplate life..."
+		elseif rnd <= 5 then
+			return "You find the meaning of life" .. changeCash(usr, 42)
+		else
+			local lifeCount = gameUsers[usr.host].inventory["life"].amount
+			local s
+			if math.random(0,1) == 1 then
+				s = "You don't actually have a life..."
+			else
+				s = "You don't have a life!"
+			end
+			remInv(usr, "life", lifeCount)
+			return s .. " (-" .. lifeCount .. " life)"
+		end
+	end,
 	["mushroom"] = function(usr)
 		local rnd = math.random(0,15)
 		print("shroom rnd: " .. rnd)
