@@ -95,7 +95,7 @@ local config = {
 	
 	--turns on terminal input, can be used on linux to input commands directly from a second terminal
 	terminal = "gnome-terminal -x",
-	terminalinput = true
+	terminalinput = true,
 
     -- List of plugins to load
     plugins = {
