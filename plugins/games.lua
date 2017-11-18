@@ -22,7 +22,9 @@ storeInventory={
 ["credit"]=	{name="credit",	cost=-5000000,info="You owe somebody a lot of money",amount=1,instock=false},
 ["void"]=	{name="void",	cost=-50000,info="Watch out, this will take money with it!",amount=1,instock=false},
 ["junk"]=	{name="junk",	cost=-500,info="Why do you have this, you will have to PAY someone to get rid of it",amount=1,instock=false},
+["life"]=	{name="life",	cost=1,info="A life. Contains little monetary value.",amount=1,instock=false},
 ["powder"]=	{name="powder",	cost=5,info="It's some kind of powder...",amount=1,instock=true},
+["mushroom"]=	{name="mushroom",	cost=30,info="A common fungus used for food.",amount=1,instock=true},
 ["chips"]=	{name="chips",	cost=50,info="Baked Lays.",amount=1,instock=true},
 ["shoe"]=	{name="shoe",	cost=200,info="One shoe, why is there only one?",amount=1,instock=false},
 ["iPad"]=	{name="iPad",	cost=499,info="A new iPad.",amount=1,instock=true},
@@ -397,6 +399,42 @@ local itemUses = {
 			return "You find a penguin in your junk. (+1 penguin)"
 		end
 		return "Yup it is junk all right"
+	end,
+	["mushroom"] = function(usr)
+		local rnd = math.random(0,15)
+		print("shroom rnd: " .. rnd)
+		if rnd <= 1 then
+			remInv(usr, "mushroom", 1)
+			local tastes = {"bitter", "sweet", "sour", "okay", "great", "magical", "strange", "peculiar"}
+			return "You eat the mushroom. It tastes " .. tastes[math.random(#tastes)]
+		elseif rnd <= 3 then
+			local growAmount = math.random(1, 3)
+			addInv(usr, storeInventory["mushroom"], growAmount)
+			return "Your mushroom grows. (+" .. growAmount .. " mushroom)"
+		elseif rnd <= 5 then
+			local amt = math.random(-5000, -500)
+			remInv(usr, "mushroom", 1)
+			return "You get food poisoning from eating the mushroom..." .. changeCash(usr, amt)
+		elseif rnd <= 7 then
+			local amt = math.random(50, 10000)
+			remInv(usr, "mushroom", 1)
+			return "This mushroom is magical!" .. changeCash(usr, amt)
+		elseif rnd <= 9 then
+			remInv(usr, "mushroom", 1)
+			addInv(usr, storeInventory["life"], 1)
+			return "This mushroom is magical! (-1 mushroom, +1 life)"
+		elseif rnd <= 11 then
+			local powderAmount = math.random(1, 9)
+			remInv(usr, "mushroom", 1)
+			addInv(usr, storeInventory["powder"], powderAmount)
+			return "You overcook your mushroom (-1 mushroom, +" .. powderAmount .. " powder)"
+		elseif rnd <= 13 then
+			remInv(usr, "mushroom", 1)
+			return "Your mushroom is stolen by a badger (-1 mushroom)"
+		else
+			remInv(usr, "mushroom", 1)
+			return "The mushroom explodes into a giant mushroom cloud." .. changeCash(usr, math.random(1, 20)*-10000)
+		end
 	end,
 	["chips"] = function(usr)
 		local rnd = math.random(1,150)
