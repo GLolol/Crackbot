@@ -91,7 +91,7 @@ couponList = {
 	{name="Give Bonus IV",var=10000000000,cost=5,useFunc=5,info="Being nice to people may help you."},
 		--18
 	{name="Whitehole",var=1,cost=5,info="Removes one blackhole on use. - 'Who knew the existence of whiteholes were coupons all along!'"},
-	
+
 	--Useless Coupons
 		--19..27
 	{name="Paper",var=1,cost=5,info="Just a blank piece of paper"},
@@ -103,7 +103,7 @@ couponList = {
 	{name="+100 Nothing",var=1,cost=5,info="Wow, it's nothing."},
 	{name="+1,000,000 Nothing",var=1,cost=5,info="Wow, it's nothing."},
 	{name="+1,000,000,000,000 Nothing",var=1,cost=5,info="Wow, it's nothing."},
-	
+
 	--Permanent Effect Coupons
 		--28 29 30 31 32
 	{name="+1 Powder Value",func=function(c,a)return c+a end,cost=5,bonusVal="powder",info="Holding this makes Powders worth more."},
@@ -111,13 +111,13 @@ couponList = {
 	{name="Blackhole Attractor",var=0.4,cost=-5,info="You are more likely to get a blackhole."},
 	{name="Void Expanse",func=function(c)return abs(c) end,allowstore=true,cost=5,bonusVal="void",info="Voids are now positive value to you."},
 	{name="Bankrupt",func=function(c)return -abs(c) end,allowstore=true,bonusVal="billion",info="Billions are now negative value to you."},
-	
+
 	--Event coupons
 		--33 34 35
 	{name="Missing No.",var=1,cost=15,info="&*$@#*@^%@()#$)@(#*$*`!&^@#*&)#@)$()*)("},
 	{name="Cryptic Message",var=0.1,cost=15,info="Moooooo moooo moo mOOOoo"},
 	{name="Bomb",var=1,cost=15,info="Execute './store bombdefuse' or ALL your coupons will explode!!!"},
-	
+
 	--Place new coupons below here for now
 }
 local itemValueBonus = {}
@@ -595,7 +595,7 @@ local itemUses = {
 			return "You find out the vroom was stolen, you have to take out a credit card to pay it off (+1 credit)"
 		else
 			return "Ye ye vroom vroom +$1500000"..changeCash(usr,1500000)
-		end	
+		end
 	end,
 	["moo"]=function(usr, args)
 		local other = getUserFromNick(args[2])
@@ -1005,7 +1005,7 @@ local function odoor(usr,door)
 	if gameUsers[usr.host].cash <= 0 then
 		return "You are broke, you can't afford to open doors"
 	end
-	
+
 	door = door[1] or "" --do something with more args later?
 	if door == "secret" then return "http://starcatcher.us:54329/Door" end
 	local isNumber=false
@@ -1019,7 +1019,7 @@ local function odoor(usr,door)
 		if tonumber(door)>15 and (tonumber(door)<=adjust+1 and tonumber(door)>=adjust-1) then randMon=randMon+(adjust*50)^1.15 divideFactor=6 end
 		isNumber=true
 	end
-	
+
 	--randomly find items
 	local fitem = math.random(9)
 	if fitem==1 then fitem=true else fitem=false end
@@ -1029,7 +1029,7 @@ local function odoor(usr,door)
 	local rstring=""
 	--reset last door time
 	gameUsers[usr.host].lastDoor = os.time()
-	
+
 	if fitem and randomness>0 then
 		--find an item of approximate value
 		local item = findClosestItem(randomness)
@@ -1088,7 +1088,7 @@ local function giveMon(usr,chan,msg,args)
 		return "Invalid user, or not online"
 	end
 	toHost = toHost.host
-	
+
 	if amt and not item then
 		if amt>0 and amt==amt then
 			return give(usr.host,toHost,amt)
@@ -1107,8 +1107,8 @@ local function giveMon(usr,chan,msg,args)
 	else
 		return "You don't have that!"
 	end
-	
-	
+
+
 end
 add_cmd(giveMon,"give",0,"Give money or item to a user, '/give <username> <amount/item>', need over 10k to give.",true)
 --reload cashtext
@@ -1398,7 +1398,7 @@ q= function() --Count the color of words, or what the word says.
 		end
 		answer = wordColorList[math.random(#wordColorList)]
 		table.insert(nt,"\003"..allColors[guessC]..answer)
-		
+
 		for k,v in pairs(t) do table.insert(nt,v..wordColorList[math.random(#wordColorList)]) end
 		intro = "What does the "..guessC.." word say" guessC=""
 	else --what colour is the word
@@ -1408,7 +1408,7 @@ q= function() --Count the color of words, or what the word says.
 		end
 		answer = wordColorList[math.random(#wordColorList)]
 		table.insert(nt,"\003"..allColors[answer]..guessC)
-		
+
 		for k,v in pairs(t) do table.insert(nt,"\003"..allColors[wordColorList[math.random(#wordColorList)]]..v) end
 		intro = "What color is the word "
 	end
@@ -1418,7 +1418,7 @@ q= function() --Count the color of words, or what the word says.
 		nt[n], nt[k] = nt[k], nt[n]
 		n = n - 1
 	end
-	
+
 	return intro..guessC.." : "..table.concat(nt," "),tostring(answer),timeout,multiplier
 end,
 isPossible= function(s) --this question only accepts number and color answers
@@ -1446,12 +1446,12 @@ local function quiz(usr,chan,msg,args)
 	if not msg or not tonumber(args[1]) then
 		return "Start a question for the channel, '/quiz <bet>'"
 	end
-	
+
 	local qName = chan.."quiz"
 	if activeQuiz[qName] then return
 		"There is already an active quiz here!"
 	end
-	
+
 	local bet= math.floor(tonumber(args[1]))
 	if chan:sub(1,1)~='#' then
 		if bet>10000 then
@@ -1461,7 +1461,7 @@ local function quiz(usr,chan,msg,args)
 	if bet > 100000000000 then
 		return "You cannot bet more than 100 billion"
 	end
-	
+
 	local gusr = gameUsers[usr.host]
 	if bet~=bet or bet<1000 then
 		return "Must bet at least 1000!"
