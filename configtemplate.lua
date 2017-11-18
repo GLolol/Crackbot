@@ -50,6 +50,7 @@ function getPerms(host,chan)
 end
 
 function getCommandPerms(cmd,chan)
+	if not commands[cmd] then return 100 end
 	local defaultlvl = commands[cmd].level
 	if defaultlvl >= 100 then return defaultlvl end
 	if chan and channelCommandPermissions[chan] then
