@@ -573,6 +573,9 @@ local itemUses = {
 			return "You stare at your table. The table stares back o.o"
 		elseif rnd <= 65 then
 			return "You look underneath your table and find a huge wad of cash!"..changeCash(usr,math.random(1,50000))
+		elseif rnd <= 77 then
+			remInv(usr, "table", 1)
+			return "You flip your table (╯°□°）╯︵ ┻━┻. Excel crashes. (-1 table)"
 		elseif rnd <= 90 then
 			remInv(usr, "table", 1)
 			return "You flip your table (╯°□°）╯︵ ┻━┻. It falls and breaks. (-1 table)"
