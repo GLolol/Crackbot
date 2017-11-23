@@ -546,17 +546,21 @@ local itemUses = {
 	end,
 	["nothing"]=function(usr)
 		local rnd = math.random(1,10)
-		if rnd < 2 then
-			remInv(usr,"nothing",1)
-			return "Your nothing was confiscated by the universal oversight committee for breaking the laws of the universe. You are given a $50000 fine"..changeCash(usr,-50000)
-		elseif rnd < 3 then
+		if rnd < 4 then
+                        local fine = math.min(0.8*gameUsers[usr.host].cash, math.random(10,70)*gameUsers[usr.host].inventory["nothing"].cost)
+			local amt = gameUsers[usr.host].inventory["nothing"].amount
+			remInv(usr, "nothing", amt)
+			return "Your nothing is confiscated by the universal oversight committee for breaking the laws of the universe. You are given a $"..fine.." fine (-" .. amt .. " nothing)"..changeCash(usr,-fine)
+		elseif rnd < 7 then
 			remInv(usr,"nothing",1)
 			return "You look inside your nothing and get sucked inside to an alternate universe where you didn't have it (-1 nothing)"
-		elseif rnd < 8 then
+		elseif rnd < 9 then
 			addInv(usr,storeInventory["nothing"],1)
 			return "You look inside your nothing but find nothing inside (+1 nothing)"
 		else
-			return "You try to use your nothing. Nothing happens"
+			local rnd = math.random(1, math.floor(0.3*gameUsers[usr.host].inventory["nothing"].amount))
+			addInv(usr,storeInventory["nothing"], rnd)
+			return "You try to use your nothing. Nothing happens (+" .. rnd .. " nothing)"
 		end
 	end,
 	["doll"]=function(usr,args,chan)
