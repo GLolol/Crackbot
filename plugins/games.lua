@@ -404,7 +404,9 @@ local itemUses = {
 	["life"] = function(usr)
 		local rnd = math.random(0,10)
 		if rnd == 0 then
-			return "You can't use something you don't have!"
+			addInv(usr, storeInventory["nothing"], 1)
+			remInv(usr, "life", 1)
+			return "You never had a life... (-1 life, +1 nothing)"
 		elseif rnd <= 3 then
 			return "You contemplate life..."
 		elseif rnd <= 5 then
@@ -437,19 +439,19 @@ local itemUses = {
 			remInv(usr, "mushroom", 1)
 			return "You get food poisoning from eating the mushroom..." .. changeCash(usr, amt)
 		elseif rnd <= 7 then
-			local amt = math.random(50, 10000)
+			local amt = math.random(500, 300000)
 			remInv(usr, "mushroom", 1)
-			return "This mushroom is magical!" .. changeCash(usr, amt)
-		elseif rnd <= 9 then
+			return "This mushroom is magical and makes you rich!" .. changeCash(usr, amt)
+		elseif rnd <= 10 then
 			remInv(usr, "mushroom", 1)
 			addInv(usr, storeInventory["life"], 1)
 			return "This mushroom is magical! (-1 mushroom, +1 life)"
-		elseif rnd <= 11 then
+		elseif rnd <= 12 then
 			local powderAmount = math.random(1, 9)
 			remInv(usr, "mushroom", 1)
 			addInv(usr, storeInventory["powder"], powderAmount)
 			return "You overcook your mushroom (-1 mushroom, +" .. powderAmount .. " powder)"
-		elseif rnd <= 13 then
+		elseif rnd <= 14 then
 			remInv(usr, "mushroom", 1)
 			return "Your mushroom is stolen by a badger (-1 mushroom)"
 		else
