@@ -547,7 +547,7 @@ local itemUses = {
 		return "You sold your pet penguin for $5000000. You feel bad for selling such a rare species"..changeCash(usr,5000000)
 	end,
 	["nothing"]=function(usr)
-		local rnd = math.random(1,10)
+		local rnd = math.random(1,12)
 		if rnd < 4 then
                         local fine = math.min(0.8*gameUsers[usr.host].cash, math.random(10,70)*gameUsers[usr.host].inventory["nothing"].cost)
 			local amt = gameUsers[usr.host].inventory["nothing"].amount
@@ -560,7 +560,10 @@ local itemUses = {
 			addInv(usr,storeInventory["nothing"],1)
 			return "You look inside your nothing but find nothing inside (+1 nothing)"
 		else
-			local rnd = math.random(1, math.floor(0.3*gameUsers[usr.host].inventory["nothing"].amount))
+			local rnd = math.max(math.floor(0.3*gameUsers[usr.host].inventory["nothing"].amount), 1)
+			if rnd > 1 then
+				rnd = math.random(1, rnd)
+			end
 			addInv(usr,storeInventory["nothing"], rnd)
 			return "You try to use your nothing. Nothing happens (+" .. rnd .. " nothing)"
 		end
