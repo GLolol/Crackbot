@@ -927,6 +927,11 @@ local itemUses = {
 	['antiPad'] = function(usr,args)
 		return "You play Angry Birds."
 	end,
+	['astra'] = function(usr,args)
+		local astra getUserFromNick("astra")
+		changeCash(astra, 5000)
+		return "Astra pimps you out for the day "..changeCash(usr,-5000)
+	end,
 }
 
 local function useItem(usr,chan,msg,args)
