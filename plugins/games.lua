@@ -341,7 +341,7 @@ local itemUses = {
 				table.insert(userinventory, v)
 			end
 		end
-		if #userinventory == 0 then return randomuser.nick.." pushes you into a bottomless void (-$500000)"..changeCash(usr, -500000) end
+		if #userinventory == 0 then return "The void sucks away at your earnings... (-$500000)"..changeCash(usr, -500000) end
 		local randomitem = userinventory[math.random(#userinventory)]
 
 		local destroyed = math.floor(maxCost/randomitem.cost)
